@@ -3,4 +3,7 @@
     <dimen name="fab_margin">16dp</dimen>
 
     <dimen name="default_text_size">20sp</dimen>
+    <dimen name="main_activity_margin_start">24dp</dimen>
+    <dimen name="main_activity_margin_end">24dp</dimen>
+    <dimen name="main_activity_radio_buttons_text_size">16sp</dimen>
 </resources>

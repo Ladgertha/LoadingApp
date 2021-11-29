@@ -24,19 +24,51 @@
         android:id="@+id/main_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/main_activity_margin_start"
+        android:layout_marginEnd="@dimen/main_activity_margin_end"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:context=".MainActivity"
         tools:showIn="@layout/activity_main">
 
-        <ru.ladgertha.loadingapplication.LoadingButton
-            android:id="@+id/customButton"
-            android:layout_width="0dp"
-            app:layout_constraintStart_toStartOf="parent"
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/downloadButton"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <RadioButton
+                android:id="@+id/radio_red"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/main_activity_radio_buttons_text_size"
+                android:text="@string/glide_button" />
+
+            <RadioButton
+                android:id="@+id/radio_blue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/main_activity_radio_buttons_text_size"
+                android:text="@string/repository_button" />
+
+            <RadioButton
+                android:id="@+id/radio_green"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/main_activity_radio_buttons_text_size"
+                android:text="@string/retrofit_button" />
+        </RadioGroup>
+
+        <ru.ladgertha.loadingapplication.LoadingButton
+            android:id="@+id/downloadButton"
+            android:layout_width="0dp"
             android:layout_height="60dp"
             android:layout_margin="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
