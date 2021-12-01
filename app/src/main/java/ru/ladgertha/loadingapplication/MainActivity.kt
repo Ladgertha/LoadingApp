@@ -32,8 +32,16 @@ class MainActivity : AppCompatActivity() {
         registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
 
         binding.downloadButton.setOnClickListener {
-            download()
+            val url = getUrl()
+            download(url)
         }
+    }
+
+    private fun getUrl(): String = when {
+        binding.glideRadioButton.isChecked -> GLIDE_URL
+        binding.retrofitRadioButton.isChecked -> RETROFIT_URL
+        binding.udacityRadioButton.isChecked -> UDACITY_URL
+        else -> throw IllegalArgumentException("Unknown radio button is checked")
     }
 
     private val receiver = object : BroadcastReceiver() {
@@ -42,9 +50,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun download() {
+    private fun download(url: String) {
         val request =
-            DownloadManager.Request(Uri.parse(URL))
+            DownloadManager.Request(Uri.parse(url))
                 .setTitle(getString(R.string.app_name))
                 .setDescription(getString(R.string.app_description))
                 .setRequiresCharging(false)
@@ -57,7 +65,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val URL =
+        private const val RETROFIT_URL = "https://github.com/square/retrofit"
+        private const val GLIDE_URL = "https://github.com/bumptech/glide"
+        private const val UDACITY_URL =
             "https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter/archive/master.zip"
         private const val CHANNEL_ID = "channelId"
     }

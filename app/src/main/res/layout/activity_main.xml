@@ -40,21 +40,21 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <RadioButton
-                android:id="@+id/radio_red"
+                android:id="@+id/glideRadioButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/main_activity_radio_buttons_text_size"
                 android:text="@string/glide_button" />
 
             <RadioButton
-                android:id="@+id/radio_blue"
+                android:id="@+id/udacityRadioButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/main_activity_radio_buttons_text_size"
                 android:text="@string/repository_button" />
 
             <RadioButton
-                android:id="@+id/radio_green"
+                android:id="@+id/retrofitRadioButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/main_activity_radio_buttons_text_size"
