@@ -21,13 +21,23 @@ class LoadingButton @JvmOverloads constructor(
         textSize = 24F * resources.displayMetrics.scaledDensity
     }
 
+    private var buttonLabel: String = resources.getString(R.string.button_name)
+
     private val valueAnimator = ValueAnimator()
 
     private var buttonState: ButtonState by Delegates.observable<ButtonState>(ButtonState.Completed) { p, old, new ->
         when (new) {
-            ButtonState.Clicked -> TODO()
-            ButtonState.Completed -> TODO()
-            ButtonState.Loading -> TODO()
+            ButtonState.Clicked -> {
+
+            }
+            ButtonState.Completed -> {
+                buttonLabel = resources.getString(R.string.button_name)
+                valueAnimator.end()
+            }
+            ButtonState.Loading -> {
+                //valueAnimator.start()
+                buttonLabel = resources.getString(R.string.button_loading)
+            }
         }
     }
 
@@ -47,7 +57,7 @@ class LoadingButton @JvmOverloads constructor(
     private fun drawText(canvas: Canvas) {
         textPaint.color = Color.BLACK
         canvas.drawText(
-            if (buttonState == ButtonState.Loading) "Loading" else "Download",
+            buttonLabel,
             (widthSize / 2f),
             (heightSize / 2f),
             textPaint
@@ -67,4 +77,7 @@ class LoadingButton @JvmOverloads constructor(
         setMeasuredDimension(w, h)
     }
 
+    fun setState(buttonState: ButtonState) {
+        this.buttonState = buttonState
+    }
 }

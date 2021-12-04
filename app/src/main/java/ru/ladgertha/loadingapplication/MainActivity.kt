@@ -9,6 +9,8 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
+import android.os.FileObserver
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import ru.ladgertha.loadingapplication.databinding.ActivityMainBinding
@@ -22,6 +24,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var pendingIntent: PendingIntent
     private lateinit var action: NotificationCompat.Action
     private lateinit var binding: ActivityMainBinding
+//    private val fileObserver: FileObserver = DownloadsObserver(
+//        getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)?.absolutePath
+//    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,21 +37,29 @@ class MainActivity : AppCompatActivity() {
         registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
 
         binding.downloadButton.setOnClickListener {
-            val url = getUrl()
-            download(url)
+            binding.downloadButton.setState(ButtonState.Clicked)
+            getUrl()?.let { url ->
+                binding.downloadButton.setState(ButtonState.Loading)
+                //download(url)
+                //fileObserver.startWatching()
+            } ?: kotlin.run {
+                binding.downloadButton.setState(ButtonState.Clicked)
+            }
         }
     }
 
-    private fun getUrl(): String = when {
+    private fun getUrl(): String? = when {
         binding.glideRadioButton.isChecked -> GLIDE_URL
         binding.retrofitRadioButton.isChecked -> RETROFIT_URL
         binding.udacityRadioButton.isChecked -> UDACITY_URL
-        else -> throw IllegalArgumentException("Unknown radio button is checked")
+        else -> null
     }
 
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+        //    fileObserver.stopWatching()
+            binding.downloadButton.setState(ButtonState.Completed)
         }
     }
 
