@@ -16,9 +16,14 @@ class LoadingButton @JvmOverloads constructor(
     private var heightSize = 0
 
     private val textPaint = Paint().apply {
-        color = Color.WHITE
+        color = Color.BLACK
         textAlign = Paint.Align.CENTER
         textSize = 24F * resources.displayMetrics.scaledDensity
+    }
+
+    private val buttonPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = context.getColor(R.color.normalBackgroundButton)
+        style = Paint.Style.FILL
     }
 
     private var buttonLabel: String = resources.getString(R.string.button_name)
@@ -28,15 +33,20 @@ class LoadingButton @JvmOverloads constructor(
     private var buttonState: ButtonState by Delegates.observable<ButtonState>(ButtonState.Completed) { p, old, new ->
         when (new) {
             ButtonState.Clicked -> {
-
+                buttonPaint.color =
+                    resources.getColor(R.color.clickedBackgroundButton, null)
             }
             ButtonState.Completed -> {
+                buttonPaint.color =
+                    resources.getColor(R.color.normalBackgroundButton, null)
                 buttonLabel = resources.getString(R.string.button_name)
                 valueAnimator.end()
             }
             ButtonState.Loading -> {
                 //valueAnimator.start()
                 buttonLabel = resources.getString(R.string.button_loading)
+                buttonPaint.color =
+                    resources.getColor(R.color.loadingBackgroundButton, null)
             }
         }
     }
@@ -50,17 +60,29 @@ class LoadingButton @JvmOverloads constructor(
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
         canvas?.let {
+            drawBackgroundButton(canvas)
             drawText(canvas)
         }
     }
 
     private fun drawText(canvas: Canvas) {
-        textPaint.color = Color.BLACK
         canvas.drawText(
             buttonLabel,
             (widthSize / 2f),
             (heightSize / 2f),
             textPaint
+        )
+    }
+
+    private fun drawBackgroundButton(canvas: Canvas) {
+        canvas.drawRoundRect(
+            0f,
+            0f,
+            widthSize.toFloat(),
+            heightSize.toFloat(),
+            30f,
+            30f,
+            buttonPaint
         )
     }
 
@@ -79,5 +101,6 @@ class LoadingButton @JvmOverloads constructor(
 
     fun setState(buttonState: ButtonState) {
         this.buttonState = buttonState
+        invalidate()
     }
 }

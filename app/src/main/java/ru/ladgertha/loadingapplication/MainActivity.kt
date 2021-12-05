@@ -59,7 +59,9 @@ class MainActivity : AppCompatActivity() {
         override fun onReceive(context: Context?, intent: Intent?) {
             val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
         //    fileObserver.stopWatching()
-            binding.downloadButton.setState(ButtonState.Completed)
+            if (id == downloadID) {
+                binding.downloadButton.setState(ButtonState.Completed)
+            }
         }
     }
 
