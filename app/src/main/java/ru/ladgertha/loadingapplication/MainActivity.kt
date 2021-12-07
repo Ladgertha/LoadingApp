@@ -14,6 +14,8 @@ import android.os.FileObserver
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import ru.ladgertha.loadingapplication.databinding.ActivityMainBinding
+import java.net.URL
+import java.net.URLConnection
 
 
 class MainActivity : AppCompatActivity() {
@@ -24,9 +26,22 @@ class MainActivity : AppCompatActivity() {
     private lateinit var pendingIntent: PendingIntent
     private lateinit var action: NotificationCompat.Action
     private lateinit var binding: ActivityMainBinding
-//    private val fileObserver: FileObserver = DownloadsObserver(
-//        getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)?.absolutePath
-//    )
+
+    private lateinit var fileObserver: FileObserver
+
+    private fun initFileObserver() {
+        if (::fileObserver.isInitialized.not()) {
+            val myUrl = URL(getUrl())
+            val urlConnection: URLConnection = myUrl.openConnection()
+            urlConnection.connect()
+            val fileLength = urlConnection.contentLength
+            fileObserver = DownloadsObserver(
+                path = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)?.absolutePath,
+                loadingButton = binding.downloadButton,
+                totalFileLength = fileLength
+            )
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,11 +54,14 @@ class MainActivity : AppCompatActivity() {
         binding.downloadButton.setOnClickListener {
             binding.downloadButton.setState(ButtonState.Clicked)
             getUrl()?.let { url ->
-                binding.downloadButton.setState(ButtonState.Loading)
-                //download(url)
-                //fileObserver.startWatching()
+                Thread {
+                    initFileObserver()
+                    binding.downloadButton.setState(ButtonState.Loading)
+                    download(url)
+                    fileObserver.startWatching()
+                }.start()
             } ?: kotlin.run {
-                binding.downloadButton.setState(ButtonState.Clicked)
+                binding.downloadButton.setState(ButtonState.Completed)
             }
         }
     }
@@ -58,7 +76,7 @@ class MainActivity : AppCompatActivity() {
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
-        //    fileObserver.stopWatching()
+            //    fileObserver.stopWatching()
             if (id == downloadID) {
                 binding.downloadButton.setState(ButtonState.Completed)
             }

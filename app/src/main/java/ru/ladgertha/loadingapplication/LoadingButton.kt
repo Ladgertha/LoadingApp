@@ -26,7 +26,13 @@ class LoadingButton @JvmOverloads constructor(
         style = Paint.Style.FILL
     }
 
+    private val circlePaint = Paint().apply {
+        color = Color.YELLOW
+        style = Paint.Style.FILL
+    }
+
     private var buttonLabel: String = resources.getString(R.string.button_name)
+    private var loadingProgress: Int = 1
 
     private val valueAnimator = ValueAnimator()
 
@@ -40,7 +46,7 @@ class LoadingButton @JvmOverloads constructor(
                 buttonPaint.color =
                     resources.getColor(R.color.normalBackgroundButton, null)
                 buttonLabel = resources.getString(R.string.button_name)
-                valueAnimator.end()
+                //valueAnimator.end()
             }
             ButtonState.Loading -> {
                 //valueAnimator.start()
@@ -62,6 +68,7 @@ class LoadingButton @JvmOverloads constructor(
         canvas?.let {
             drawBackgroundButton(canvas)
             drawText(canvas)
+            drawCircle(canvas)
         }
     }
 
@@ -86,6 +93,26 @@ class LoadingButton @JvmOverloads constructor(
         )
     }
 
+    private fun drawCircle(canvas: Canvas) {
+        val circleMargin = 0.2f
+        val circleLeft =
+            widthSize.toFloat() - heightSize.toFloat() + heightSize.toFloat() * circleMargin
+        val circleTop = heightSize.toFloat() * circleMargin
+        val circleRight = widthSize.toFloat() - heightSize.toFloat() * circleMargin
+        val circleBottom = heightSize.toFloat() - heightSize.toFloat() * circleMargin
+
+        canvas.drawArc(
+            circleLeft,
+            circleTop,
+            circleRight,
+            circleBottom,
+            0F,
+            360F * loadingProgress / 100,
+            true,
+            circlePaint
+        )
+    }
+
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val minw: Int = paddingLeft + paddingRight + suggestedMinimumWidth
         val w: Int = resolveSizeAndState(minw, widthMeasureSpec, 1)
@@ -101,6 +128,11 @@ class LoadingButton @JvmOverloads constructor(
 
     fun setState(buttonState: ButtonState) {
         this.buttonState = buttonState
+        invalidate()
+    }
+
+    fun setProgress(progress: Int) {
+        loadingProgress = progress
         invalidate()
     }
 }
