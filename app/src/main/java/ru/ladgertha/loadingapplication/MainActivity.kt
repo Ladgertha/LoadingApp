@@ -27,6 +27,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var action: NotificationCompat.Action
     private lateinit var binding: ActivityMainBinding
 
+    // TODO fix crash
     private lateinit var fileObserver: FileObserver
 
     private fun initFileObserver() {
