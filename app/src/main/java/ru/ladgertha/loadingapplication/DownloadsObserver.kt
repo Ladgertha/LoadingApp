@@ -3,7 +3,6 @@ package ru.ladgertha.loadingapplication
 import android.os.FileObserver
 import java.io.File
 
-// TODO Подумать, как иначе и как связать с кнопкой. Убрать FileObserver
 class DownloadsObserver(
     path: String?,
     private val loadingButton: LoadingButton,
@@ -23,6 +22,7 @@ class DownloadsObserver(
             }
             DELETE, MOVED_FROM -> {
             }
+            CREATE,
             MODIFY -> {
                 progress = (File(path).length() * 100 / totalFileLength).toInt()
                 loadingButton.setProgress(progress)
