@@ -30,22 +30,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var action: NotificationCompat.Action
     private lateinit var binding: ActivityMainBinding
 
-    private lateinit var fileObserver: FileObserver
-
-    private fun initFileObserver() {
-        if (::fileObserver.isInitialized.not()) {
-            val myUrl = URL(getUrl())
-            val urlConnection: URLConnection = myUrl.openConnection()
-            urlConnection.connect()
-            val fileLength = urlConnection.contentLength
-            fileObserver = DownloadsObserver(
-                path = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)?.absolutePath + "/downloadFile",
-                loadingButton = binding.downloadButton,
-                totalFileLength = fileLength
-            )
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -58,9 +42,7 @@ class MainActivity : AppCompatActivity() {
             binding.downloadButton.setState(ButtonState.Clicked)
             getUrl()?.let { url ->
                 Thread {
-                    initFileObserver()
                     binding.downloadButton.setState(ButtonState.Loading)
-                    fileObserver.startWatching()
                     download(url)
                 }.start()
             } ?: kotlin.run {
@@ -79,7 +61,6 @@ class MainActivity : AppCompatActivity() {
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
-            fileObserver.stopWatching()
             if (id == downloadID) {
                 binding.downloadButton.setState(ButtonState.Completed)
 
@@ -118,7 +99,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun download(url: String) {
-        val file = File(Environment.getExternalStorageDirectory().path + "/downloadFile")
         val request =
             DownloadManager.Request(Uri.parse(url))
                 .setTitle(getString(R.string.app_name))
@@ -126,12 +106,7 @@ class MainActivity : AppCompatActivity() {
                 .setRequiresCharging(false)
                 .setAllowedOverMetered(true)
                 .setAllowedOverRoaming(true)
-                .setDestinationUri(Uri.fromFile(file))
                 .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
-        Log.d(
-            "ANYYYA",
-            getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)?.absolutePath + "/downloadFile"
-        )
 
         val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
         downloadID =

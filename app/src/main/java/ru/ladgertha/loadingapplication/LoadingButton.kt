@@ -62,7 +62,6 @@ class LoadingButton @JvmOverloads constructor(
 
     }
 
-
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
         canvas?.let {
@@ -128,11 +127,6 @@ class LoadingButton @JvmOverloads constructor(
 
     fun setState(buttonState: ButtonState) {
         this.buttonState = buttonState
-        invalidate()
-    }
-
-    fun setProgress(progress: Int) {
-        loadingProgress = progress
         invalidate()
     }
 }
